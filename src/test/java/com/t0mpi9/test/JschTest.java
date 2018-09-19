@@ -1,7 +1,7 @@
 package com.t0mpi9.test;
 
-import com.t0mpi9.client.JschExecClient;
-import com.t0mpi9.entity.CustomUserInfo;
+import com.t0mpi9.client.JschClient;
+import com.t0mpi9.entity.JschUserInfo;
 import org.junit.Test;
 
 /**
@@ -14,15 +14,14 @@ public class JschTest {
 
     @Test
     public void testJschExec() throws Exception{
-        JschExecClient jschExec = new JschExecClient
+        try (JschClient jschExec = new JschClient
                 .Builder()
                 .host("192.168.1.250")
                 .port(22)
                 .username("zhubenle")
-                .userInfo(new CustomUserInfo("Zbl0926"))
-                .build();
-
-        System.out.println(jschExec.execute("ps -ef | grep 18080"));
-        jschExec.close();
+                .userInfo(new JschUserInfo("Zbl0926"))
+                .build()){
+            System.out.println(jschExec.execute("ps -ef | grep 18080"));
+        }
     }
 }

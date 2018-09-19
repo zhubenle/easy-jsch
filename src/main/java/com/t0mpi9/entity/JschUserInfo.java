@@ -9,7 +9,7 @@ import com.jcraft.jsch.UserInfo;
  *
  * @author zhubenle
  */
-public class CustomUserInfo implements UserInfo, UIKeyboardInteractive {
+public class JschUserInfo implements UserInfo, UIKeyboardInteractive {
 
     private String password;
     private String passphrase;
@@ -17,7 +17,7 @@ public class CustomUserInfo implements UserInfo, UIKeyboardInteractive {
     private Boolean promptPassphrase= true;
     private Boolean promptYesNo = true;
 
-    public CustomUserInfo(String password) {
+    public JschUserInfo(String password) {
         this.password = password;
     }
 

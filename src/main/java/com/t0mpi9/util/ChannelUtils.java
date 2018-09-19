@@ -11,7 +11,7 @@ import java.io.InputStream;
  *
  * @author zhubenle
  */
-public class IoUtils {
+public class ChannelUtils {
 
     public static String read(Channel channel) throws IOException {
         InputStream in = channel.getInputStream();

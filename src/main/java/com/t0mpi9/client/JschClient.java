@@ -3,7 +3,7 @@ package com.t0mpi9.client;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
-import com.t0mpi9.util.IoUtils;
+import com.t0mpi9.util.ChannelUtils;
 
 import java.io.IOException;
 
@@ -13,9 +13,9 @@ import java.io.IOException;
  *
  * @author zhubenle
  */
-public class JschExecClient extends AbstractJschClient {
+public class JschClient extends AbstractJschClient {
 
-    private JschExecClient(Builder builder) {
+    private JschClient(Builder builder) {
         try {
             session = jsch.getSession(builder.username, builder.host, builder.port);
             session.setUserInfo(builder.userInfo);
@@ -25,43 +25,45 @@ public class JschExecClient extends AbstractJschClient {
         }
     }
 
-    public String execute(String command) throws JSchException, IOException {
+    @Override
+    public String exec(String command) throws JSchException, IOException {
         ChannelExec channelExec = (ChannelExec) session.openChannel("exec");
         channelExec.setCommand(command);
         channelExec.connect();
-        String result = IoUtils.read(channelExec);
+        String result = ChannelUtils.read(channelExec);
         channelExec.disconnect();
         return result;
     }
 
-    public static class Builder {
-        private String username;
-        private UserInfo userInfo;
-        private String host;
-        private Integer port;
+    public static class Builder extends AbstractJschClient.AbstractBuilder {
 
+        @Override
         public Builder username(String username) {
             this.username = username;
             return this;
         }
 
+        @Override
         public Builder userInfo(UserInfo userInfo) {
             this.userInfo = userInfo;
             return this;
         }
 
+        @Override
         public Builder host(String host) {
             this.host = host;
             return this;
         }
 
+        @Override
         public Builder port(Integer port) {
             this.port = port;
             return this;
         }
 
-        public JschExecClient build() {
-            return new JschExecClient(this);
+        @Override
+        public JschClient build() {
+            return new JschClient(this);
         }
     }
 }
