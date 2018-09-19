@@ -7,6 +7,8 @@ import com.jcraft.jsch.UserInfo;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Objects;
 
 /**
@@ -29,11 +31,20 @@ public abstract class AbstractJschClient implements Closeable {
      * @return 执行返回结果
      *
      * @throws JSchException
-     *         异常
+     *         JSch异常
      * @throws IOException
-     *         异常
+     *         IO异常
      */
     public abstract String exec(String command) throws JSchException, IOException;
+
+    /**
+     * 执行shell
+     * @param in 命令输入流
+     * @param out 结果输出流
+     * @throws JSchException JSch异常
+     * @throws IOException IO异常
+     */
+    public abstract void shell(InputStream in, OutputStream out) throws JSchException, IOException;
 
     @Override
     public void close() {
@@ -51,6 +62,8 @@ public abstract class AbstractJschClient implements Closeable {
         public UserInfo userInfo;
         public String host;
         public Integer port;
+        public Integer sessionConnectTimeout;
+        public Integer channelConnectTimeout;
 
         /**
          * 设置用户名
@@ -91,6 +104,26 @@ public abstract class AbstractJschClient implements Closeable {
          * @return 建造者对象
          */
         public abstract AbstractBuilder port(Integer port);
+
+        /**
+         * 设置session连接超时时间
+         *
+         * @param sessionConnectTimeout
+         *         超时时间(ms)
+         *
+         * @return 建造者对象
+         */
+        public abstract AbstractBuilder sessionConnectTimeout(Integer sessionConnectTimeout);
+
+        /**
+         * 设置channel连接超时时间
+         *
+         * @param channelConnectTimeout
+         *         超时时间(ms)
+         *
+         * @return 建造者对象
+         */
+        public abstract AbstractBuilder channelConnectTimeout(Integer channelConnectTimeout);
 
         /**
          * 创建对象
