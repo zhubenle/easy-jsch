@@ -1,14 +1,11 @@
 package com.t0mpi9.client;
 
 import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
 import com.t0mpi9.util.ChannelUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * <br/>
@@ -16,11 +13,11 @@ import java.io.OutputStream;
  *
  * @author zhubenle
  */
-public class JschClient extends AbstractJschClient {
+public class JschExecClient extends AbstractJschClient {
 
     private Builder builder;
 
-    private JschClient(Builder builder) {
+    private JschExecClient(Builder builder) {
         try {
             this.builder = builder;
             session = jsch.getSession(builder.username, builder.host, builder.port);
@@ -43,11 +40,8 @@ public class JschClient extends AbstractJschClient {
     }
 
     @Override
-    public void shell(InputStream in, OutputStream out) throws JSchException, IOException {
-        ChannelShell channelShell = (ChannelShell) session.openChannel("shell");
-        channelShell.setInputStream(in);
-        channelShell.setOutputStream(out);
-        channelShell.connect(builder.sessionConnectTimeout);
+    public void shell(String shell) throws JSchException, IOException {
+        //空实现
     }
 
     public static class Builder extends AbstractJschClient.AbstractBuilder {
@@ -89,8 +83,8 @@ public class JschClient extends AbstractJschClient {
         }
 
         @Override
-        public JschClient build() {
-            return new JschClient(this);
+        public JschExecClient build() {
+            return new JschExecClient(this);
         }
     }
 }

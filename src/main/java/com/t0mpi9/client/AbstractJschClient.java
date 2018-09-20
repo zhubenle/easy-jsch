@@ -7,8 +7,6 @@ import com.jcraft.jsch.UserInfo;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Objects;
 
 /**
@@ -39,12 +37,11 @@ public abstract class AbstractJschClient implements Closeable {
 
     /**
      * 执行shell
-     * @param in 命令输入流
-     * @param out 结果输出流
+     * @param shell 命令
      * @throws JSchException JSch异常
      * @throws IOException IO异常
      */
-    public abstract void shell(InputStream in, OutputStream out) throws JSchException, IOException;
+    public abstract void shell(String shell) throws JSchException, IOException;
 
     @Override
     public void close() {
