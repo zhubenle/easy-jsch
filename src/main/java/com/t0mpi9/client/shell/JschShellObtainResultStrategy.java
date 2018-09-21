@@ -1,4 +1,4 @@
-package com.t0mpi9.client;
+package com.t0mpi9.client.shell;
 
 import com.jcraft.jsch.Channel;
 

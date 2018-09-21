@@ -1,4 +1,4 @@
-package com.t0mpi9.client;
+package com.t0mpi9.client.shell;
 
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author zhubenle
  */
-public class JschShellClient extends AbstractJschClient {
+public class JschShellClient extends AbstractJschShellClient {
 
     private Builder builder;
     private volatile ChannelShell channelShell;

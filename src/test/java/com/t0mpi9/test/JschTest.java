@@ -1,7 +1,7 @@
 package com.t0mpi9.test;
 
-import com.t0mpi9.client.JschExecClient;
-import com.t0mpi9.client.JschShellClient;
+import com.t0mpi9.client.exec.JschExecClient;
+import com.t0mpi9.client.shell.JschShellClient;
 import com.t0mpi9.entity.JschUserInfo;
 import org.junit.Test;
 

@@ -1,13 +1,10 @@
 package com.t0mpi9.client;
 
-import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * <br/>
@@ -15,13 +12,10 @@ import java.util.Objects;
  *
  * @author zhubenle
  */
-public abstract class AbstractJschClient implements Closeable {
-
-    public JSch jsch = new JSch();
-    public Session session;
+public interface JschClient extends Closeable {
 
     /**
-     * 远程服务器执行命令
+     * 远程服务器执令
      *
      * @param command
      *         命令
@@ -33,28 +27,24 @@ public abstract class AbstractJschClient implements Closeable {
      * @throws IOException
      *         IO异常
      */
-    public abstract String exec(String command) throws JSchException, IOException;
+    String exec(String command) throws JSchException, IOException;
 
     /**
      * 执行shell
-     * @param shell 命令
-     * @throws JSchException JSch异常
-     * @throws IOException IO异常
+     *
+     * @param shell
+     *         命令
+     *
+     * @throws JSchException
+     *         JSch异常
+     * @throws IOException
+     *         IO异常
      */
-    public abstract void shell(String shell) throws JSchException, IOException;
+    void shell(String shell) throws JSchException, IOException;
 
-    @Override
-    public void close() {
-        if (Objects.nonNull(session) && session.isConnected()) {
-            session.disconnect();
-        }
-    }
 
-    public abstract static class AbstractBuilder {
+    abstract class AbstractBuilder {
 
-        /**
-         * 基本参数
-         */
         public String username;
         public UserInfo userInfo;
         public String host;
@@ -73,14 +63,14 @@ public abstract class AbstractJschClient implements Closeable {
         public abstract AbstractBuilder username(String username);
 
         /**
-         * 设置密码验证对象
+         * 设置密码
          *
-         * @param port
-         *         用户名
+         * @param userInfo
+         *         密码对象
          *
          * @return 建造者对象
          */
-        public abstract AbstractBuilder userInfo(UserInfo port);
+        public abstract AbstractBuilder userInfo(UserInfo userInfo);
 
         /**
          * 设置ip
@@ -103,30 +93,30 @@ public abstract class AbstractJschClient implements Closeable {
         public abstract AbstractBuilder port(Integer port);
 
         /**
-         * 设置session连接超时时间
+         * 设置会话连接超时时间
          *
          * @param sessionConnectTimeout
-         *         超时时间(ms)
+         *         超时时间
          *
          * @return 建造者对象
          */
         public abstract AbstractBuilder sessionConnectTimeout(Integer sessionConnectTimeout);
 
         /**
-         * 设置channel连接超时时间
+         * 设置通道连接超时时间
          *
          * @param channelConnectTimeout
-         *         超时时间(ms)
+         *         超时时间
          *
          * @return 建造者对象
          */
         public abstract AbstractBuilder channelConnectTimeout(Integer channelConnectTimeout);
 
         /**
-         * 创建对象
+         * 构造客户端对象
          *
-         * @return 对象
+         * @return 客户端
          */
-        public abstract AbstractJschClient build();
+        public abstract JschClient build();
     }
 }
