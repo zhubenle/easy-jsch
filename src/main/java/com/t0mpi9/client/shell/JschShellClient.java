@@ -3,6 +3,7 @@ package com.t0mpi9.client.shell;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
+import com.t0mpi9.client.JschClientObtainResultStrategy;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,12 +35,6 @@ public class JschShellClient extends AbstractJschShellClient {
     }
 
     @Override
-    public String exec(String command) throws JSchException, IOException {
-        //空实现
-        return null;
-    }
-
-    @Override
     public void shell(String shell) throws JSchException, IOException {
         initChannel();
         printWriter.println(shell);
@@ -51,7 +46,7 @@ public class JschShellClient extends AbstractJschShellClient {
             synchronized (this) {
                 if (Objects.isNull(channelShell) || !channelShell.isConnected()) {
                     channelShell = (ChannelShell) session.openChannel("shell");
-                    builder.resultStrategy.obtainResult(channelShell.getInputStream(), channelShell);
+                    builder.resultStrategy.obtainResult(channelShell);
                     printWriter = new PrintWriter(channelShell.getOutputStream());
                     channelShell.connect(builder.channelConnectTimeout);
                 }
@@ -69,9 +64,8 @@ public class JschShellClient extends AbstractJschShellClient {
 
     public static class Builder extends AbstractBuilder {
 
-        private JschShellObtainResultStrategy resultStrategy;
-
-        public Builder resultStrategy(JschShellObtainResultStrategy resultStrategy) {
+        @Override
+        public Builder resultStrategy(JschClientObtainResultStrategy resultStrategy) {
             this.resultStrategy = resultStrategy;
             return this;
         }

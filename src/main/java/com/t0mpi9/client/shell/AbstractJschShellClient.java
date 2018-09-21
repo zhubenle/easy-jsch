@@ -21,9 +21,8 @@ public abstract class AbstractJschShellClient implements JschClient {
 
 
     @Override
-    public String exec(String command) throws JSchException, IOException {
+    public void exec(String command) throws JSchException, IOException {
         //空实现
-        return null;
     }
 
     @Override

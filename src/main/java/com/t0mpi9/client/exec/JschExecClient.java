@@ -3,7 +3,7 @@ package com.t0mpi9.client.exec;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
-import com.t0mpi9.util.ChannelUtils;
+import com.t0mpi9.client.JschClientObtainResultStrategy;
 
 import java.io.IOException;
 
@@ -30,16 +30,21 @@ public class JschExecClient extends AbstractJschExecClient {
     }
 
     @Override
-    public String exec(String command) throws JSchException, IOException {
+    public void exec(String command) throws JSchException, IOException {
         ChannelExec channelExec = (ChannelExec) session.openChannel("exec");
         channelExec.setCommand(command);
         channelExec.connect(builder.sessionConnectTimeout);
-        String result = ChannelUtils.read(channelExec);
+        builder.resultStrategy.obtainResult(channelExec);
         channelExec.disconnect();
-        return result;
     }
 
     public static class Builder extends AbstractBuilder {
+
+        @Override
+        public Builder resultStrategy(JschClientObtainResultStrategy resultStrategy) {
+            this.resultStrategy = resultStrategy;
+            return this;
+        }
 
         @Override
         public Builder username(String username) {

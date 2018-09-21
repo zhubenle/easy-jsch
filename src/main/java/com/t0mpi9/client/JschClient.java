@@ -20,14 +20,12 @@ public interface JschClient extends Closeable {
      * @param command
      *         命令
      *
-     * @return 执行返回结果
-     *
      * @throws JSchException
      *         JSch异常
      * @throws IOException
      *         IO异常
      */
-    String exec(String command) throws JSchException, IOException;
+    void exec(String command) throws JSchException, IOException;
 
     /**
      * 执行shell
@@ -51,6 +49,7 @@ public interface JschClient extends Closeable {
         public Integer port;
         public Integer sessionConnectTimeout;
         public Integer channelConnectTimeout;
+        public JschClientObtainResultStrategy resultStrategy;
 
         /**
          * 设置用户名
@@ -111,6 +110,16 @@ public interface JschClient extends Closeable {
          * @return 建造者对象
          */
         public abstract AbstractBuilder channelConnectTimeout(Integer channelConnectTimeout);
+
+        /**
+         * 设置结果处理策略
+         *
+         * @param resultStrategy
+         *         策略
+         *
+         * @return 建造者对象
+         */
+        public abstract AbstractBuilder resultStrategy(JschClientObtainResultStrategy resultStrategy);
 
         /**
          * 构造客户端对象

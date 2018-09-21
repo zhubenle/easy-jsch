@@ -3,9 +3,11 @@ package com.t0mpi9.test;
 import com.t0mpi9.client.exec.JschExecClient;
 import com.t0mpi9.client.shell.JschShellClient;
 import com.t0mpi9.entity.JschUserInfo;
+import com.t0mpi9.util.ChannelUtils;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * <br/>
@@ -25,9 +27,12 @@ public class JschTest {
                 .userInfo(new JschUserInfo("Zbl0926"))
                 .sessionConnectTimeout(30 * 1000)
                 .channelConnectTimeout(30 * 1000)
+                .resultStrategy(channel -> {
+                    System.out.println(ChannelUtils.read(channel));
+                })
                 .build()) {
 
-            System.out.println(jschExecClient.exec("ps -ef | grep 18080"));
+            jschExecClient.exec("ps -ef | grep 18080");
         }
     }
 
@@ -41,8 +46,9 @@ public class JschTest {
                 .userInfo(new JschUserInfo("Zbl0926"))
                 .sessionConnectTimeout(30 * 1000)
                 .channelConnectTimeout(30 * 1000)
-                .resultStrategy((in, channel) -> new Thread(() -> {
+                .resultStrategy(channel -> new Thread(() -> {
                     try {
+                        InputStream in = channel.getInputStream();
                         byte[] tmp = new byte[1024];
                         while (true) {
                             while (in.available() > 0) {
