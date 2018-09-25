@@ -1,6 +1,7 @@
 package com.t0mpi9.client;
 
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UserInfo;
 
 import java.io.Closeable;
@@ -48,10 +49,10 @@ public interface JschClient extends Closeable {
      *
      * @throws JSchException
      *         JSch异常
-     * @throws IOException
+     * @throws SftpException
      *         IO异常
      */
-    void sftp(String command) throws JSchException, IOException;
+    void sftp(String command) throws JSchException, SftpException;
 
     /**
      * scp拷贝文件本地到远程或远程到本地
