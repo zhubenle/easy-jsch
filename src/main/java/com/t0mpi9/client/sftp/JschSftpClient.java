@@ -1,14 +1,11 @@
-package com.t0mpi9.client.shell;
+package com.t0mpi9.client.sftp;
 
-import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
 import com.t0mpi9.client.EmptyJschClient;
 import com.t0mpi9.client.JschClientObtainResultStrategy;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Objects;
 
 /**
  * <br/>
@@ -16,45 +13,20 @@ import java.util.Objects;
  *
  * @author zhubenle
  */
-public class JschShellClient extends EmptyJschClient {
+public class JschSftpClient extends EmptyJschClient {
 
     private Builder builder;
-    private volatile ChannelShell channelShell;
-    private volatile PrintWriter printWriter;
 
-    private JschShellClient(Builder builder) {
+    private JschSftpClient(Builder builder) {
         super(builder);
         this.builder = builder;
         connect();
     }
 
     @Override
-    public void shell(String shell) throws JSchException, IOException {
-        initChannel();
-        printWriter.println(shell);
-        printWriter.flush();
+    public void sftp() throws JSchException, IOException {
     }
 
-    private void initChannel() throws JSchException, IOException{
-        if (Objects.isNull(channelShell) || !channelShell.isConnected()) {
-            synchronized (this) {
-                if (Objects.isNull(channelShell) || !channelShell.isConnected()) {
-                    channelShell = (ChannelShell) session.openChannel("shell");
-                    builder.resultStrategy.obtainResult(channelShell);
-                    printWriter = new PrintWriter(channelShell.getOutputStream());
-                    channelShell.connect(builder.channelConnectTimeout);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void close() {
-        if (Objects.nonNull(channelShell) && channelShell.isConnected()) {
-            channelShell.disconnect();
-        }
-        super.close();
-    }
 
     public static class Builder extends AbstractBuilder {
 
@@ -94,8 +66,8 @@ public class JschShellClient extends EmptyJschClient {
         }
 
         @Override
-        public JschShellClient build() {
-            return new JschShellClient(this);
+        public JschSftpClient build() {
+            return new JschSftpClient(this);
         }
     }
 }

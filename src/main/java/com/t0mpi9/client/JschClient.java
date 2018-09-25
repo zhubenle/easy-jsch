@@ -40,6 +40,29 @@ public interface JschClient extends Closeable {
      */
     void shell(String shell) throws JSchException, IOException;
 
+    void sftp() throws JSchException, IOException;
+
+    /**
+     * scp拷贝文件本地到远程或远程到本地
+     *
+     * @param localFile
+     *         本地文件
+     * @param remoteFile
+     *         远程文件
+     * @param pTimestamp
+     *         是否保留文件的原时间戳
+     * @param scpType
+     *         拷贝类型(本地到远程，远程到本地)
+     */
+    void scp(String localFile, String remoteFile, boolean pTimestamp, ScpType scpType) throws JSchException, IOException;
+
+    enum ScpType {
+        /**
+         *
+         */
+        SCP_TO,
+        SCP_FROM
+    }
 
     abstract class AbstractBuilder {
 
@@ -59,7 +82,10 @@ public interface JschClient extends Closeable {
          *
          * @return 建造者对象
          */
-        public abstract AbstractBuilder username(String username);
+        public AbstractBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
 
         /**
          * 设置密码
@@ -69,7 +95,10 @@ public interface JschClient extends Closeable {
          *
          * @return 建造者对象
          */
-        public abstract AbstractBuilder userInfo(UserInfo userInfo);
+        public AbstractBuilder userInfo(UserInfo userInfo) {
+            this.userInfo = userInfo;
+            return this;
+        }
 
         /**
          * 设置ip
@@ -79,7 +108,10 @@ public interface JschClient extends Closeable {
          *
          * @return 建造者对象
          */
-        public abstract AbstractBuilder host(String host);
+        public AbstractBuilder host(String host) {
+            this.host = host;
+            return this;
+        }
 
         /**
          * 设置端口
@@ -89,7 +121,10 @@ public interface JschClient extends Closeable {
          *
          * @return 建造者对象
          */
-        public abstract AbstractBuilder port(Integer port);
+        public AbstractBuilder port(Integer port) {
+            this.port = port;
+            return this;
+        }
 
         /**
          * 设置会话连接超时时间
@@ -99,7 +134,10 @@ public interface JschClient extends Closeable {
          *
          * @return 建造者对象
          */
-        public abstract AbstractBuilder sessionConnectTimeout(Integer sessionConnectTimeout);
+        public AbstractBuilder sessionConnectTimeout(Integer sessionConnectTimeout) {
+            this.sessionConnectTimeout = sessionConnectTimeout;
+            return this;
+        }
 
         /**
          * 设置通道连接超时时间
@@ -109,7 +147,10 @@ public interface JschClient extends Closeable {
          *
          * @return 建造者对象
          */
-        public abstract AbstractBuilder channelConnectTimeout(Integer channelConnectTimeout);
+        public AbstractBuilder channelConnectTimeout(Integer channelConnectTimeout) {
+            this.channelConnectTimeout = channelConnectTimeout;
+            return this;
+        }
 
         /**
          * 设置结果处理策略
@@ -119,7 +160,10 @@ public interface JschClient extends Closeable {
          *
          * @return 建造者对象
          */
-        public abstract AbstractBuilder resultStrategy(JschClientObtainResultStrategy resultStrategy);
+        public AbstractBuilder resultStrategy(JschClientObtainResultStrategy resultStrategy) {
+            this.resultStrategy = resultStrategy;
+            return this;
+        }
 
         /**
          * 构造客户端对象

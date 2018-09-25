@@ -1,6 +1,8 @@
 package com.t0mpi9.util;
 
 import com.jcraft.jsch.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +15,10 @@ import java.io.InputStream;
  */
 public class ChannelUtils {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(ChannelUtils.class);
+
     public static String read(Channel channel) {
-        StringBuilder sb = null;
+        StringBuilder sb;
         try {
             InputStream in = channel.getInputStream();
             sb = new StringBuilder();
@@ -31,7 +35,7 @@ public class ChannelUtils {
                     if (in.available() > 0) {
                         continue;
                     }
-    //                System.out.println("exit-status: " + channel.getExitStatus());
+                    LOGGER.info("exit-status: {}", channel.getExitStatus());
                     break;
                 }
                 Thread.sleep(1000);
@@ -40,5 +44,36 @@ public class ChannelUtils {
             throw new RuntimeException(e);
         }
         return sb.toString();
+    }
+
+    public static int checkAck(InputStream in) throws IOException {
+        int b = in.read();
+        // b may be 0 for success,
+        //          1 for error,
+        //          2 for fatal error,
+        //          -1
+        if (b == 0) {
+            return b;
+        }
+        if (b == -1) {
+            return b;
+        }
+
+        if (b == 1 || b == 2) {
+            StringBuilder sb = new StringBuilder();
+            int c;
+            do {
+                c = in.read();
+                sb.append((char) c);
+            } while (c != '\n');
+            if (b == 1) {
+                // error
+            }
+            if (b == 2) {
+                // fatal error
+            }
+            LOGGER.info(sb.toString());
+        }
+        return b;
     }
 }

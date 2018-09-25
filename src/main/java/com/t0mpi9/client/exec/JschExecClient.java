@@ -19,15 +19,9 @@ public class JschExecClient extends EmptyJschClient {
     private Builder builder;
 
     public JschExecClient(Builder builder) {
-        try {
-            this.builder = builder;
-            session = jsch.getSession(builder.username, builder.host, builder.port);
-            session.setUserInfo(builder.userInfo);
-            session.setTimeout(builder.sessionConnectTimeout);
-            session.connect();
-        } catch (JSchException e) {
-            throw new RuntimeException(e);
-        }
+        super(builder);
+        this.builder = builder;
+        connect();
     }
 
     @Override
@@ -43,44 +37,37 @@ public class JschExecClient extends EmptyJschClient {
 
         @Override
         public Builder resultStrategy(JschClientObtainResultStrategy resultStrategy) {
-            this.resultStrategy = resultStrategy;
-            return this;
+            return (Builder) super.resultStrategy(resultStrategy);
         }
 
         @Override
         public Builder username(String username) {
-            this.username = username;
-            return this;
+            return (Builder) super.username(username);
         }
 
         @Override
         public Builder userInfo(UserInfo userInfo) {
-            this.userInfo = userInfo;
-            return this;
+            return (Builder) super.userInfo(userInfo);
         }
 
         @Override
         public Builder host(String host) {
-            this.host = host;
-            return this;
+            return (Builder) super.host(host);
         }
 
         @Override
         public Builder port(Integer port) {
-            this.port = port;
-            return this;
+            return (Builder) super.port(port);
         }
 
         @Override
         public Builder sessionConnectTimeout(Integer sessionConnectTimeout) {
-            this.sessionConnectTimeout = sessionConnectTimeout;
-            return this;
+            return (Builder) super.sessionConnectTimeout(sessionConnectTimeout);
         }
 
         @Override
         public Builder channelConnectTimeout(Integer channelConnectTimeout) {
-            this.channelConnectTimeout = channelConnectTimeout;
-            return this;
+            return (Builder) super.channelConnectTimeout(channelConnectTimeout);
         }
 
         @Override

@@ -1,6 +1,8 @@
 package com.t0mpi9.test;
 
+import com.t0mpi9.client.JschClient;
 import com.t0mpi9.client.exec.JschExecClient;
+import com.t0mpi9.client.scp.JschScpClient;
 import com.t0mpi9.client.shell.JschShellClient;
 import com.t0mpi9.entity.JschUserInfo;
 import com.t0mpi9.util.ChannelUtils;
@@ -16,6 +18,25 @@ import java.io.InputStream;
  * @author zhubenle
  */
 public class JschTest {
+
+    @Test
+    public void testScp() throws Exception{
+        try (JschScpClient jschScpClient = new JschScpClient
+                .Builder()
+                .host("192.168.1.250")
+                .port(22)
+                .username("zhubenle")
+                .userInfo(new JschUserInfo("Zbl0926"))
+                .sessionConnectTimeout(30 * 1000)
+                .channelConnectTimeout(30 * 1000)
+                .build()){
+
+            String localFile = "/Users/benlezhu/Downloads/test.html";
+            String remoteFile = "/home/zhubenle/test.html";
+//            jschScpClient.scp(localFile, remoteFile, false, JschClient.ScpType.SCP_TO);
+            jschScpClient.scp(localFile, remoteFile, false, JschClient.ScpType.SCP_FROM);
+        }
+    }
 
     @Test
     public void testExec() throws Exception {
