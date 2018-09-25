@@ -40,7 +40,18 @@ public interface JschClient extends Closeable {
      */
     void shell(String shell) throws JSchException, IOException;
 
-    void sftp() throws JSchException, IOException;
+    /**
+     * sftp操作
+     *
+     * @param command
+     *         sftp命令
+     *
+     * @throws JSchException
+     *         JSch异常
+     * @throws IOException
+     *         IO异常
+     */
+    void sftp(String command) throws JSchException, IOException;
 
     /**
      * scp拷贝文件本地到远程或远程到本地

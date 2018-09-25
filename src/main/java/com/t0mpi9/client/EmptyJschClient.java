@@ -29,7 +29,7 @@ public class EmptyJschClient implements JschClient {
         }
     }
 
-    public void connect() {
+    public void sessionConnect() {
         try {
             session.connect();
         } catch (JSchException e) {
@@ -48,7 +48,7 @@ public class EmptyJschClient implements JschClient {
     }
 
     @Override
-    public void sftp() throws JSchException, IOException {
+    public void sftp(String command) throws JSchException, IOException {
         //空实现
     }
 

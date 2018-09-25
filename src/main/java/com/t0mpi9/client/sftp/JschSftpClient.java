@@ -1,11 +1,13 @@
 package com.t0mpi9.client.sftp;
 
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
 import com.t0mpi9.client.EmptyJschClient;
 import com.t0mpi9.client.JschClientObtainResultStrategy;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * <br/>
@@ -16,15 +18,36 @@ import java.io.IOException;
 public class JschSftpClient extends EmptyJschClient {
 
     private Builder builder;
+    private volatile ChannelSftp channelSftp;
 
     private JschSftpClient(Builder builder) {
         super(builder);
         this.builder = builder;
-        connect();
+        sessionConnect();
+    }
+
+    private void initChannel() throws JSchException, IOException{
+        if (Objects.isNull(channelSftp) || !channelSftp.isConnected()) {
+            synchronized (this) {
+                if (Objects.isNull(channelSftp) || !channelSftp.isConnected()) {
+                    channelSftp = (ChannelSftp) session.openChannel("shell");
+                    channelSftp.connect(builder.channelConnectTimeout);
+                }
+            }
+        }
     }
 
     @Override
-    public void sftp() throws JSchException, IOException {
+    public void close() {
+        if (Objects.nonNull(channelSftp) && channelSftp.isConnected()) {
+            channelSftp.disconnect();
+        }
+        super.close();
+    }
+
+    @Override
+    public void sftp(String command) throws JSchException, IOException {
+        initChannel();
     }
 
 

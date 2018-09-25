@@ -22,7 +22,7 @@ public class JschScpClient extends EmptyJschClient {
     private JschScpClient(Builder builder) {
         super(builder);
         this.builder = builder;
-        connect();
+        sessionConnect();
     }
 
     @Override

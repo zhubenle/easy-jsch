@@ -25,7 +25,7 @@ public class JschShellClient extends EmptyJschClient {
     private JschShellClient(Builder builder) {
         super(builder);
         this.builder = builder;
-        connect();
+        sessionConnect();
     }
 
     @Override
