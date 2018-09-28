@@ -4,7 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UserInfo;
-import com.t0mpi9.client.EmptyJschClient;
+import com.t0mpi9.client.AbstractJschClient;
 import com.t0mpi9.client.JschClientObtainResultStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import java.util.Objects;
  *
  * @author zhubenle
  */
-public class JschSftpClient extends EmptyJschClient implements JschSftpCommand {
+public class JschSftpClient extends AbstractJschClient implements JschSftpCommand {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(JschSftpClient.class);
 

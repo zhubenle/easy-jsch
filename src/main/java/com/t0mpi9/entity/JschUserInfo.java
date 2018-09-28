@@ -1,6 +1,5 @@
 package com.t0mpi9.entity;
 
-import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
 /**
@@ -9,7 +8,7 @@ import com.jcraft.jsch.UserInfo;
  *
  * @author zhubenle
  */
-public class JschUserInfo implements UserInfo, UIKeyboardInteractive {
+public class JschUserInfo implements UserInfo {
 
     private String password;
     private String passphrase;
@@ -49,11 +48,6 @@ public class JschUserInfo implements UserInfo, UIKeyboardInteractive {
     @Override
     public void showMessage(String message) {
 
-    }
-
-    @Override
-    public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt, boolean[] echo) {
-        return new String[0];
     }
 
     public void setPassword(String password) {

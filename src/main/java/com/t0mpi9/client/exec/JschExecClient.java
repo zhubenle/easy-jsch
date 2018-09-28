@@ -3,7 +3,7 @@ package com.t0mpi9.client.exec;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
-import com.t0mpi9.client.EmptyJschClient;
+import com.t0mpi9.client.AbstractJschClient;
 import com.t0mpi9.client.JschClientObtainResultStrategy;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.io.IOException;
  *
  * @author zhubenle
  */
-public class JschExecClient extends EmptyJschClient {
+public class JschExecClient extends AbstractJschClient {
 
     private Builder builder;
 

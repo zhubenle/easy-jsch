@@ -1,9 +1,6 @@
 package com.t0mpi9.client;
 
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.*;
 import com.t0mpi9.client.exception.JschClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +14,14 @@ import java.util.Objects;
  *
  * @author zhubenle
  */
-public class EmptyJschClient implements JschClient {
+public abstract class AbstractJschClient implements JschClient {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(EmptyJschClient.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractJschClient.class);
 
     public JSch jsch = new JSch();
     public Session session;
 
-    public EmptyJschClient(AbstractBuilder builder) {
+    public AbstractJschClient(AbstractBuilder builder) {
         try {
             session = jsch.getSession(builder.username, builder.host, builder.port);
             session.setUserInfo(builder.userInfo);

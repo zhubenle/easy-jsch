@@ -3,7 +3,7 @@ package com.t0mpi9.client.scp;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
-import com.t0mpi9.client.EmptyJschClient;
+import com.t0mpi9.client.AbstractJschClient;
 import com.t0mpi9.client.JschClientObtainResultStrategy;
 import com.t0mpi9.util.ChannelUtils;
 
@@ -15,7 +15,7 @@ import java.io.*;
  *
  * @author zhubenle
  */
-public class JschScpClient extends EmptyJschClient {
+public class JschScpClient extends AbstractJschClient {
 
     private Builder builder;
 
