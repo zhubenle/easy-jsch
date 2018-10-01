@@ -10,6 +10,20 @@
     <name>easy-jsch</name>
     <url>http://www.t0mpi9.com</url>
 
+    <distributionManagement>
+        <repository>
+            <id>t0mpi9-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://96.45.179.2:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>t0mpi9-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://96.45.179.2:8081/repository/maven-snapshots/</url>
+            <uniqueVersion>true</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
