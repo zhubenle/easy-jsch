@@ -14,11 +14,11 @@ import java.io.IOException;
  *
  * @author zhubenle
  */
-public class JschExecClient extends AbstractJschClient {
+public class ExecClient extends AbstractJschClient {
 
     private Builder builder;
 
-    public JschExecClient(Builder builder) {
+    public ExecClient(Builder builder) {
         super(builder);
         this.builder = builder;
         sessionConnect();
@@ -30,7 +30,16 @@ public class JschExecClient extends AbstractJschClient {
         channelExec.setCommand(command);
         channelExec.connect(builder.sessionConnectTimeout);
         builder.resultStrategy.obtainResult(channelExec);
-        channelExec.disconnect();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return false;
+    }
+
+    @Override
+    public void reConnect() {
+
     }
 
     public static class Builder extends AbstractBuilder {
@@ -71,8 +80,8 @@ public class JschExecClient extends AbstractJschClient {
         }
 
         @Override
-        public JschExecClient build() {
-            return new JschExecClient(this);
+        public ExecClient build() {
+            return new ExecClient(this);
         }
     }
 }

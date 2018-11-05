@@ -1,11 +1,12 @@
 package com.t0mpi9.client;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import com.t0mpi9.client.exception.JschClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -41,25 +42,8 @@ public abstract class AbstractJschClient implements JschClient {
         }
     }
 
-    @Override
-    public void exec(String command) throws JSchException, IOException {
-        //空实现
-    }
-
-    @Override
-    public void shell(String shell) throws JSchException, IOException {
-        //空实现
-    }
-
-    @Override
-    public void sftp(String command) throws JSchException, SftpException {
-        //空实现
-    }
-
-    @Override
-    public void scp(String localFile, String remoteFile, boolean pTimestamp, ScpType scpType) throws JSchException, IOException {
-        //空实现
-    }
+    public abstract boolean isConnected();
+    public abstract void reConnect();
 
     @Override
     public void close() {

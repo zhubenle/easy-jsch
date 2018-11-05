@@ -5,6 +5,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UserInfo;
 import com.t0mpi9.client.AbstractJschClient;
 import com.t0mpi9.client.JschClientObtainResultStrategy;
+import com.t0mpi9.client.exception.JschClientException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,21 +17,28 @@ import java.util.Objects;
  *
  * @author zhubenle
  */
-public class JschShellClient extends AbstractJschClient {
+public class ShellClient extends AbstractJschClient {
 
     private Builder builder;
     private volatile ChannelShell channelShell;
     private volatile PrintWriter printWriter;
 
-    private JschShellClient(Builder builder) {
+    private ShellClient(Builder builder) {
         super(builder);
         this.builder = builder;
         sessionConnect();
+        try {
+            initChannel();
+        } catch (JSchException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void shell(String shell) throws JSchException, IOException {
-        initChannel();
+    public void shell(String shell) {
+        if (!channelShell.isConnected()) {
+            throw new JschClientException("chanel is not connect");
+        }
         printWriter.println(shell);
         printWriter.flush();
     }
@@ -40,12 +48,26 @@ public class JschShellClient extends AbstractJschClient {
             synchronized (this) {
                 if (Objects.isNull(channelShell) || !channelShell.isConnected()) {
                     channelShell = (ChannelShell) session.openChannel("shell");
+                    channelShell.connect(builder.channelConnectTimeout);
                     builder.resultStrategy.obtainResult(channelShell);
                     printWriter = new PrintWriter(channelShell.getOutputStream());
-                    channelShell.connect(builder.channelConnectTimeout);
                 }
             }
         }
+    }
+
+    @Override
+    public void reConnect() {
+        try {
+            initChannel();
+        } catch (JSchException | IOException e) {
+            throw new JschClientException(e);
+        }
+    }
+
+    @Override
+    public boolean isConnected() {
+        return channelShell != null && channelShell.isConnected();
     }
 
     @Override
@@ -94,8 +116,8 @@ public class JschShellClient extends AbstractJschClient {
         }
 
         @Override
-        public JschShellClient build() {
-            return new JschShellClient(this);
+        public ShellClient build() {
+            return new ShellClient(this);
         }
     }
 }

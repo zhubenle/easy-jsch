@@ -6,6 +6,7 @@ import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UserInfo;
 import com.t0mpi9.client.AbstractJschClient;
 import com.t0mpi9.client.JschClientObtainResultStrategy;
+import com.t0mpi9.client.exception.JschClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,17 +18,24 @@ import java.util.Objects;
  *
  * @author zhubenle
  */
-public class JschSftpClient extends AbstractJschClient implements JschSftpCommand {
+public class SftpClient extends AbstractJschClient implements SftpCommand {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JschSftpClient.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SftpClient.class);
+
+    private final static String SPACE = " ";
 
     private Builder builder;
     private volatile ChannelSftp channelSftp;
 
-    private JschSftpClient(Builder builder) {
+    private SftpClient(Builder builder) {
         super(builder);
         this.builder = builder;
         sessionConnect();
+        try {
+            initChannel();
+        } catch (JSchException e) {
+            throw new JschClientException(e);
+        }
     }
 
     private void initChannel() throws JSchException {
@@ -42,6 +50,58 @@ public class JschSftpClient extends AbstractJschClient implements JschSftpComman
     }
 
     @Override
+    public void sftp(String command) throws SftpException {
+        if (command == null || command.length() == 0) {
+            return;
+        }
+        String cmd = obtainCmd(command);
+        String[] ps = obtainParams(command);
+        if (verifyParams(ps, cmd)) {
+            return;
+        }
+        switch (cmd) {
+            case QUIT:
+                channelSftp.quit();
+                break;
+            case EXIT:
+                channelSftp.exit();
+                break;
+            case RE_KEY:
+                break;
+            case CD:
+                channelSftp.cd(ps[0]);
+                break;
+            case LCD:
+                channelSftp.lcd(ps[0]);
+                break;
+            case RM:
+                break;
+            case RMDIR:
+                break;
+            case MKDIR:
+                break;
+
+            default:
+                LOGGER.warn("sftp command {} not support", command);
+                break;
+        }
+    }
+
+    @Override
+    public void reConnect() {
+        try {
+            initChannel();
+        } catch (JSchException e) {
+            throw new JschClientException(e);
+        }
+    }
+
+    @Override
+    public boolean isConnected() {
+        return channelSftp != null && channelSftp.isConnected();
+    }
+
+    @Override
     public void close() {
         if (Objects.nonNull(channelSftp) && channelSftp.isConnected()) {
             channelSftp.disconnect();
@@ -49,49 +109,26 @@ public class JschSftpClient extends AbstractJschClient implements JschSftpComman
         super.close();
     }
 
-    @Override
-    public void sftp(String command) throws JSchException, SftpException {
-        initChannel();
-        if (command == null || command.length() == 0) {
-            return;
+    private boolean verifyParams(String[] ps, String cmd) {
+        boolean isInvalid = ((CD.equals(cmd) || LCD.equals(cmd) || RM.equals(cmd) || RMDIR.equals(cmd) || MKDIR.equals(cmd))
+                && (ps == null || ps.length < 1))
+                || ((CD.equals(cmd) || LCD.equals(cmd)) && (ps == null || ps.length < 2));
+        if (isInvalid) {
+            LOGGER.error("命令参数错误");
+            return false;
         }
-        String cmd = obtainCmd(command);
-        String[] ps = obtainParams(command);
-        if (QUIT.equals(cmd)) {
-            channelSftp.quit();
-            return;
-        }
-        if (EXIT.equals(cmd)) {
-            channelSftp.exit();
-            return;
-        }
-        if (RE_KEY.equals(cmd)) {
-            return;
-        }
-        if(CD.equals(cmd)){
-            if (ps == null || ps.length < 1) {
-                return;
-            }
-            channelSftp.cd(ps[0]);
-        }
-        if(LCD.equals(cmd)){
-            if (ps == null || ps.length < 1) {
-                return;
-            }
-            channelSftp.lcd(ps[0]);
-        }
-        LOGGER.warn("sftp command {} not support", command);
+        return true;
     }
 
     private String[] obtainParams(String command) {
-        if (!command.contains(" ")) {
-            return null;
+        if (!command.contains(SPACE)) {
+            return new String[]{};
         }
-        return command.substring(command.indexOf(" ")).split(" ");
+        return command.substring(command.indexOf(SPACE)).trim().split(SPACE);
     }
 
     private String obtainCmd(String command) {
-        return command.split(" ")[0];
+        return command.split(SPACE)[0];
     }
 
     public static class Builder extends AbstractBuilder {
@@ -132,8 +169,8 @@ public class JschSftpClient extends AbstractJschClient implements JschSftpComman
         }
 
         @Override
-        public JschSftpClient build() {
-            return new JschSftpClient(this);
+        public SftpClient build() {
+            return new SftpClient(this);
         }
     }
 }

@@ -15,11 +15,11 @@ import java.io.*;
  *
  * @author zhubenle
  */
-public class JschScpClient extends AbstractJschClient {
+public class ScpClient extends AbstractJschClient {
 
     private Builder builder;
 
-    private JschScpClient(Builder builder) {
+    private ScpClient(Builder builder) {
         super(builder);
         this.builder = builder;
         sessionConnect();
@@ -51,11 +51,11 @@ public class JschScpClient extends AbstractJschClient {
         if (ChannelUtils.checkAck(in) != 0) {
             return;
         }
-        File _localFile = new File(localFile);
+        File local = new File(localFile);
 
         if (pTimestamp) {
-            command = "T" + (_localFile.lastModified() / 1000) + " 0";
-            command += (" " + (_localFile.lastModified() / 1000) + " 0\n");
+            command = "T" + (local.lastModified() / 1000) + " 0";
+            command += (" " + (local.lastModified() / 1000) + " 0\n");
             out.write(command.getBytes());
             out.flush();
             if (ChannelUtils.checkAck(in) != 0) {
@@ -64,7 +64,7 @@ public class JschScpClient extends AbstractJschClient {
         }
 
         // send "C0644 filesize filename", where filename should not include '/'
-        long fileSize = _localFile.length();
+        long fileSize = local.length();
         command = "C0644 " + fileSize + " ";
         int index = 0;
         if ((index = localFile.lastIndexOf(File.separator)) > 0) {
@@ -80,7 +80,7 @@ public class JschScpClient extends AbstractJschClient {
         }
 
         // send a content of lfile
-        FileInputStream fis = new FileInputStream(_localFile);
+        FileInputStream fis = new FileInputStream(local);
         byte[] buf = new byte[1024];
         while (true) {
             int len = fis.read(buf, 0, buf.length);
@@ -189,6 +189,15 @@ public class JschScpClient extends AbstractJschClient {
         }
     }
 
+    @Override
+    public boolean isConnected() {
+        return false;
+    }
+
+    @Override
+    public void reConnect() {
+    }
+
     public static class Builder extends AbstractBuilder {
 
         @Override
@@ -227,8 +236,8 @@ public class JschScpClient extends AbstractJschClient {
         }
 
         @Override
-        public JschScpClient build() {
-            return new JschScpClient(this);
+        public ScpClient build() {
+            return new ScpClient(this);
         }
     }
 }

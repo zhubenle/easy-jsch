@@ -26,7 +26,7 @@ public interface JschClient extends Closeable {
      * @throws IOException
      *         IO异常
      */
-    void exec(String command) throws JSchException, IOException;
+    default void exec(String command) throws JSchException, IOException{};
 
     /**
      * 执行shell
@@ -34,12 +34,8 @@ public interface JschClient extends Closeable {
      * @param shell
      *         命令
      *
-     * @throws JSchException
-     *         JSch异常
-     * @throws IOException
-     *         IO异常
      */
-    void shell(String shell) throws JSchException, IOException;
+    default void shell(String shell) {};
 
     /**
      * sftp操作
@@ -47,12 +43,10 @@ public interface JschClient extends Closeable {
      * @param command
      *         sftp命令
      *
-     * @throws JSchException
-     *         JSch异常
      * @throws SftpException
      *         IO异常
      */
-    void sftp(String command) throws JSchException, SftpException;
+    default void sftp(String command) throws SftpException {};
 
     /**
      * scp拷贝文件本地到远程或远程到本地
@@ -65,8 +59,12 @@ public interface JschClient extends Closeable {
      *         是否保留文件的原时间戳
      * @param scpType
      *         拷贝类型(本地到远程，远程到本地)
+     * @throws JSchException
+     *         JSch异常
+     * @throws IOException
+     *         IO异常
      */
-    void scp(String localFile, String remoteFile, boolean pTimestamp, ScpType scpType) throws JSchException, IOException;
+    default void scp(String localFile, String remoteFile, boolean pTimestamp, ScpType scpType) throws JSchException, IOException{};
 
     enum ScpType {
         /**

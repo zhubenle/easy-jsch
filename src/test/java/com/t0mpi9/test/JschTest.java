@@ -1,15 +1,16 @@
 package com.t0mpi9.test;
 
 import com.t0mpi9.client.JschClient;
-import com.t0mpi9.client.exec.JschExecClient;
-import com.t0mpi9.client.scp.JschScpClient;
-import com.t0mpi9.client.shell.JschShellClient;
+import com.t0mpi9.client.exec.ExecClient;
+import com.t0mpi9.client.scp.ScpClient;
+import com.t0mpi9.client.shell.ShellClient;
 import com.t0mpi9.entity.JschUserInfo;
 import com.t0mpi9.util.ChannelUtils;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
 
 /**
  * <br/>
@@ -20,8 +21,8 @@ import java.io.InputStream;
 public class JschTest {
 
     @Test
-    public void testScp() throws Exception{
-        try (JschScpClient jschScpClient = new JschScpClient
+    public void testScp() throws Exception {
+        try (ScpClient jschScpClient = new ScpClient
                 .Builder()
                 .host("192.168.1.250")
                 .port(22)
@@ -29,7 +30,7 @@ public class JschTest {
                 .userInfo(new JschUserInfo("Zbl0926"))
                 .sessionConnectTimeout(30 * 1000)
                 .channelConnectTimeout(30 * 1000)
-                .build()){
+                .build()) {
 
             String localFile = "/Users/benlezhu/Downloads/test.html";
             String remoteFile = "/home/zhubenle/test.html";
@@ -40,7 +41,7 @@ public class JschTest {
 
     @Test
     public void testExec() throws Exception {
-        try (JschExecClient jschExecClient = new JschExecClient
+        try (ExecClient jschExecClient = new ExecClient
                 .Builder()
                 .host("192.168.1.250")
                 .port(22)
@@ -53,13 +54,12 @@ public class JschTest {
                 })
                 .build()) {
 
-            jschExecClient.exec("ps -ef | grep 18080");
+            jschExecClient.exec("ps -ef | grep tomcat");
         }
     }
 
-    @Test
-    public void testShell() throws Exception {
-        JschShellClient shellClient = new JschShellClient
+    public static void main(String[] args) {
+        ShellClient shellClient = new ShellClient
                 .Builder()
                 .host("192.168.1.250")
                 .port(22)
@@ -83,7 +83,7 @@ public class JschTest {
                                 if (in.available() > 0) {
                                     continue;
                                 }
-//                                System.out.println("exit-status: " + channel.getExitStatus());
+                                System.out.println("exit-status: " + channel.getExitStatus());
                                 break;
                             }
                         }
@@ -93,10 +93,9 @@ public class JschTest {
                 }).start())
                 .build();
 
-        Thread.sleep(2000);
-        shellClient.shell("ls");
-        Thread.sleep(2000);
-        shellClient.shell("ps -ef | grep 18080");
-        Thread.sleep(2000);
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()) {
+            shellClient.shell(scanner.next());
+        }
     }
 }

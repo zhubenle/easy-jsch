@@ -6,7 +6,7 @@ package com.t0mpi9.client.sftp;
  *
  * @author zhubenle
  */
-public interface JschSftpCommand {
+public interface SftpCommand {
 
     String QUIT = "quit";
     String EXIT = "exit";
