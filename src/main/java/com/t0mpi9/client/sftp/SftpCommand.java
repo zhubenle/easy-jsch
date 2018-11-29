@@ -54,4 +54,6 @@ public interface SftpCommand {
     String READLINK = "readlink";
     String REALPATH = "realpath";
     String VERSION = "version";
+    String HELP = "help";
+    String QUESTION_MARK = "?";
 }

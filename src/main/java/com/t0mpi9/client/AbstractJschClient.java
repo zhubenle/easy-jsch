@@ -33,6 +33,9 @@ public abstract class AbstractJschClient implements JschClient {
         }
     }
 
+    /**
+     * 会话连接
+     */
     public void sessionConnect() {
         try {
             session.connect();
@@ -42,7 +45,15 @@ public abstract class AbstractJschClient implements JschClient {
         }
     }
 
+    /**
+     * 判断是否连接
+     * @return 是否连接
+     */
     public abstract boolean isConnected();
+
+    /**
+     * 重连
+     */
     public abstract void reConnect();
 
     @Override
